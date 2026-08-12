@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amna Mumtaz — Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#08090a;
+    --bg-1:#0f1113;
+    --bg-2:#17191c;
+    --line:#26292d;
+    --grey-1:#8a8f96;
+    --grey-2:#5c6066;
+    --text:#e9eaec;
+    --amber:#e8a545;
+    --amber-dim:#8a672c;
+    --amber-glow: rgba(232,165,69,0.18);
+    --green:#7fbf8f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg-0);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--amber-glow); color:var(--amber);}
+  a{ color:inherit; text-decoration:none; }
+
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  /* background grid texture */
+  .bg-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  }
+  .glow-orb{
+    position:fixed; top:-200px; left:50%; transform:translateX(-50%);
+    width:900px; height:600px; z-index:0; pointer-events:none;
+    background: radial-gradient(ellipse at center, var(--amber-glow) 0%, transparent 65%);
+    filter: blur(20px);
+  }
+
+  /* NAV */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 18px 40px;
+    background: rgba(8,9,10,0.75);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-brand{ font-family:'JetBrains Mono', monospace; font-weight:700; font-size:15px; color:var(--text); }
+  .nav-brand span{ color:var(--amber); }
+  .nav-links{ display:flex; gap:28px; list-style:none; }
+  .nav-links li a{
+    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--grey-1);
+    transition: color .2s ease;
+    position:relative;
+  }
+  .nav-links li a:before{ content:'~/'; color:var(--amber-dim); }
+  .nav-links li a:hover{ color:var(--amber); }
+  .nav-toggle{ display:none; }
+
+  section{ position:relative; z-index:1; max-width: 980px; margin: 0 auto; padding: 140px 40px 40px; }
+
+  /* HERO / TERMINAL */
+  .hero{ min-height: 92vh; display:flex; flex-direction:column; justify-content:center; padding-top:110px; }
+  .terminal{
+    background: var(--bg-1);
+    border:1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 40px 100px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.02);
+    overflow:hidden;
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:8px;
+    padding:12px 16px; background:var(--bg-2); border-bottom:1px solid var(--line);
+  }
+  .dot{ width:11px; height:11px; border-radius:50%; }
+  .dot.red{ background:#e5645a; } .dot.yellow{ background:#e5b95a; } .dot.green{ background:#5ae58a; }
+  .term-title{ margin-left:10px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--grey-2); }
+  .term-body{ padding: 28px 26px 34px; font-family:'JetBrains Mono', monospace; font-size:15px; min-height: 260px; }
+  .term-line{ display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+  .prompt{ color:var(--amber); white-space:nowrap; }
+  .term-out{ color: var(--grey-1); }
+  .term-out .hl{ color: var(--text); }
+  .cursor{
+    display:inline-block; width:8px; height:1.1em; background:var(--amber);
+    vertical-align:text-bottom; margin-left:2px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+  #typed-name{ color:var(--text); font-weight:700; }
+  #typed-role{ color:var(--green); }
+
+  .hero-sub{ margin-top:26px; color:var(--grey-1); font-size:15px; max-width:640px; }
+  .hero-cta{ display:flex; gap:14px; margin-top:30px; flex-wrap:wrap; }
+  .btn{
+    font-family:'JetBrains Mono', monospace; font-size:13px; padding:12px 20px;
+    border-radius:6px; border:1px solid var(--line); transition: all .2s ease; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary{ background: var(--amber); color:#151005; font-weight:700; border-color:var(--amber); }
+  .btn-primary:hover{ box-shadow: 0 0 0 4px var(--amber-glow); transform: translateY(-1px); }
+  .btn-ghost{ color:var(--grey-1); }
+  .btn-ghost:hover{ color:var(--text); border-color:var(--grey-2); }
+
+  /* SECTION HEADERS */
+  .sec-label{
+    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--amber);
+    display:flex; align-items:center; gap:10px; margin-bottom:8px;
+  }
+  .sec-label:before{ content:'$'; color:var(--amber-dim); }
+  .sec-title{ font-size:32px; font-weight:700; margin-bottom:34px; letter-spacing:-0.02em; }
+  .sec-title .grey{ color:var(--grey-2); font-weight:500; }
+
+  .reveal{ opacity:0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* ABOUT */
+  .about-grid{ display:grid; grid-template-columns: 1.3fr 1fr; gap:50px; align-items:start; }
+  .about-text p{ color:var(--grey-1); margin-bottom:16px; font-size:15.5px; }
+  .about-text strong{ color:var(--text); }
+  .focus-list{ display:flex; flex-direction:column; gap:10px; }
+  .focus-item{
+    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--grey-1);
+    padding:10px 14px; border:1px solid var(--line); border-radius:6px; background:var(--bg-1);
+    display:flex; align-items:center; gap:10px;
+  }
+  .focus-item:before{ content:'▹'; color:var(--amber); }
+
+  /* PROJECTS */
+  .project-list{ display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .project{
+    background:var(--bg-1); padding:28px 30px; display:grid; grid-template-columns: 40px 1fr auto; gap:20px; align-items:start;
+    transition: background .25s ease;
+    position:relative;
+  }
+  .project:hover{ background: var(--bg-2); }
+  .project:hover .proj-name{ color:var(--amber); }
+  .proj-num{ font-family:'JetBrains Mono', monospace; color:var(--grey-2); font-size:13px; padding-top:3px; }
+  .proj-name{ font-size:18px; font-weight:700; margin-bottom:8px; transition: color .2s ease; }
+  .proj-desc{ color:var(--grey-1); font-size:14.5px; margin-bottom:14px; max-width:560px; }
+  .proj-tags{ display:flex; gap:8px; flex-wrap:wrap; }
+  .tag{ font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--amber); background:var(--amber-glow); padding:4px 9px; border-radius:4px; border:1px solid rgba(232,165,69,0.25); }
+  .proj-link{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--grey-2); align-self:center; white-space:nowrap; }
+  .proj-link:hover{ color:var(--amber); }
+
+  /* EXPERIENCE */
+  .exp-item{ display:grid; grid-template-columns: 160px 1fr; gap:24px; padding: 24px 0; border-bottom:1px solid var(--line); }
+  .exp-item:last-child{ border-bottom:none; }
+  .exp-date{ font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--grey-2); padding-top:3px; }
+  .exp-role{ font-size:17px; font-weight:700; margin-bottom:4px; }
+  .exp-org{ font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--amber); margin-bottom:10px; }
+  .exp-desc{ color:var(--grey-1); font-size:14.5px; }
+
+  /* SKILLS */
+  .skills-term{ background:var(--bg-1); border:1px solid var(--line); border-radius:10px; padding:30px 34px; font-family:'JetBrains Mono', monospace; font-size:14px; }
+  .skill-row{ display:grid; grid-template-columns: 190px 1fr; gap:16px; padding:10px 0; border-bottom:1px dashed var(--line); }
+  .skill-row:last-child{ border-bottom:none; }
+  .skill-key{ color:var(--amber); }
+  .skill-val{ color:var(--grey-1); }
+  .skill-val span{ color:var(--text); }
+
+  /* EDUCATION */
+  .edu-card{ background:var(--bg-1); border:1px solid var(--line); border-radius:10px; padding:26px 30px; margin-bottom:16px; }
+  .edu-degree{ font-size:16px; font-weight:700; margin-bottom:4px; }
+  .edu-school{ color:var(--grey-1); font-size:14px; font-family:'JetBrains Mono', monospace; }
+
+  /* FOOTER / CONTACT */
+  footer{ position:relative; z-index:1; padding: 90px 40px 60px; text-align:center; border-top:1px solid var(--line); margin-top:60px; }
+  footer .sec-title{ margin-bottom:16px; }
+  footer p{ color:var(--grey-1); max-width:480px; margin: 0 auto 30px; }
+  .contact-links{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+  .foot-note{ margin-top:60px; color:var(--grey-2); font-family:'JetBrains Mono', monospace; font-size:12px; }
+  .foot-note .amber{ color:var(--amber); }
+
+  @media (max-width: 780px){
+    .nav-links{ display:none; }
+    section{ padding: 120px 20px 30px; }
+    .about-grid{ grid-template-columns: 1fr; }
+    .project{ grid-template-columns: 30px 1fr; }
+    .proj-link{ grid-column: 2; }
+    .exp-item{ grid-template-columns: 1fr; }
+    .skill-row{ grid-template-columns: 1fr; }
+    .term-body{ font-size:13px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ transition:none; opacity:1; transform:none; }
+    .cursor{ animation:none; }
+  }
+
+  :focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow-orb"></div>
+
+<nav>
+  <div class="nav-brand">amna<span>@</span>portfolio</div>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#experience">experience</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="top">
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      <div class="term-title">amna@dev: ~</div>
+    </div>
+    <div class="term-body" id="term-body">
+      <div class="term-line"><span class="prompt">amna@dev ~ %</span><span class="term-out">whoami</span></div>
+      <div class="term-line" id="typed-line-1"></div>
+    </div>
+  </div>
+  <div class="hero-sub reveal" id="hero-sub">
+    Software Engineer building practical software across web, backend, and AI/ML — with a service mindset borrowed from years of running events, not just writing code.
+  </div>
+  <div class="hero-cta reveal" id="hero-cta">
+    <a href="#projects" class="btn btn-primary">./view-projects</a>
+    <a href="https://github.com/aamnamz" target="_blank" class="btn btn-ghost">github ↗</a>
+    <a href="https://www.linkedin.com/in/amnaamumtaz/" target="_blank" class="btn btn-ghost">linkedin ↗</a>
+  </div>
+</section>
+
+<section id="about">
+  <div class="sec-label">cat about.md</div>
+  <h2 class="sec-title reveal">About <span class="grey">// the short version</span></h2>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm a <strong>software engineer and aspiring AI/ML developer</strong> who enjoys turning ideas into practical software — things that actually solve a problem, not just tick a feature box.</p>
+      <p>My interests sit at the intersection of <strong>software development, artificial intelligence, and web development</strong>: I like projects where I can combine solid engineering with AI to build something genuinely useful. I'm still early in the journey, so this site doubles as a running log of what I've learned along the way.</p>
+      <p>Outside of code, I organize events for the Microsoft Learn Student Ambassadors chapter at IIUI — which mostly means I've gotten very good at making complicated things run smoothly under a deadline. That instinct carries straight into how I build software.</p>
+    </div>
+    <div class="focus-list reveal">
+      <div class="focus-item">Building practical AI &amp; ML projects</div>
+      <div class="focus-item">Strengthening backend &amp; systems fundamentals</div>
+      <div class="focus-item">Building scalable, useful web apps</div>
+      <div class="focus-item">Exploring AI-powered tools &amp; automation</div>
+      <div class="focus-item">Always learning — one project at a time</div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="sec-label">ls ~/projects</div>
+  <h2 class="sec-title reveal">Projects <span class="grey">// what I've built</span></h2>
+  <div class="project-list reveal">
+
+    <div class="project">
+      <div class="proj-num">01</div>
+      <div>
+        <div class="proj-name">Requify — Crowdsourced Requirement Elicitation Platform</div>
+        <div class="proj-desc">Final-year project: a full-stack platform where organizations gather software requirements via structured crowdsourcing, with Admin/Client/Participant roles, invite-only and open-volunteer modes, digital contracts, and training workflows. An AI/NLP pipeline handles duplicate detection, requirement clustering, and priority ranking, with exportable PDF/DOCX/Excel reports for stakeholders.</div>
+        <div class="proj-tags"><span class="tag">Full-Stack</span><span class="tag">NLP</span><span class="tag">spaCy</span><span class="tag">BERTopic</span><span class="tag">Sentence Transformers</span><span class="tag">Groq LLM</span></div>
+      </div>
+      <a class="proj-link" href="https://github.com/aamnamz" target="_blank">source ↗</a>
+    </div>
+
+    <div class="project">
+      <div class="proj-num">02</div>
+      <div>
+        <div class="proj-name">Const Cost — AI Construction Cost Estimator</div>
+        <div class="proj-desc">A research project that trains Random Forest and XGBoost regression models on 6,123 real construction projects to predict costs, with SHAP-based Explainable AI to visualize each feature's contribution. A Streamlit app takes natural-language input and uses a Groq LLM (Llama 3.1 8B) to turn the SHAP insights into plain-English cost-reduction suggestions.</div>
+        <div class="proj-tags"><span class="tag">Python</span><span class="tag">XGBoost</span><span class="tag">Random Forest</span><span class="tag">SHAP</span><span class="tag">Streamlit</span><span class="tag">LLM</span></div>
+      </div>
+      <a class="proj-link" href="https://github.com/aamnamz" target="_blank">source ↗</a>
+    </div>
+
+    <div class="project">
+      <div class="proj-num">03</div>
+      <div>
+        <div class="proj-name">Crop Recommendation System</div>
+        <div class="proj-desc">A Python ML pipeline applying Naïve Bayes and Decision Tree classifiers to recommend optimal crops from soil and environmental data — covering the full workflow from preprocessing and feature engineering to training, evaluation, and classifier comparison.</div>
+        <div class="proj-tags"><span class="tag">Python</span><span class="tag">Machine Learning</span><span class="tag">Naïve Bayes</span><span class="tag">Decision Trees</span></div>
+      </div>
+      <a class="proj-link" href="https://github.com/aamnamz" target="_blank">source ↗</a>
+    </div>
+
+    <div class="project">
+      <div class="proj-num">04</div>
+      <div>
+        <div class="proj-name">Multilingual First Aid &amp; Emergency App</div>
+        <div class="proj-desc">A bilingual Android app with Urdu/English voice recognition, a searchable first-aid database, dual-language RTL UI, and color-coded urgency levels. Includes one-touch emergency dialing, GPS-based hospital lookup, and offline SQLite storage for first-aid guidance in both languages.</div>
+        <div class="proj-tags"><span class="tag">Android</span><span class="tag">Voice Recognition</span><span class="tag">SQLite</span><span class="tag">Accessibility</span></div>
+      </div>
+      <a class="proj-link" href="https://github.com/aamnamz" target="_blank">source ↗</a>
+    </div>
+
+    <div class="project">
+      <div class="proj-num">05</div>
+      <div>
+        <div class="proj-name">Custom Shell</div>
+        <div class="proj-desc">A Unix-inspired shell built in Python with 10+ built-in commands, arrow-key command history, and Tab auto-completion — compiled into a standalone .exe via PyInstaller with cross-platform Windows/Unix handling.</div>
+        <div class="proj-tags"><span class="tag">Python</span><span class="tag">Operating Systems</span><span class="tag">Systems Programming</span></div>
+      </div>
+      <a class="proj-link" href="https://github.com/aamnamz" target="_blank">source ↗</a>
+    </div>
+
+    <div class="project">
+      <div class="proj-num">06</div>
+      <div>
+        <div class="proj-name">Allergy Tracking Web Portal</div>
+        <div class="proj-desc">A full-stack web app for logging and visualizing allergy triggers and symptoms, with a responsive frontend and a Node.js/JS backend handling user-specific data storage and retrieval.</div>
+        <div class="proj-tags"><span class="tag">Full-Stack</span><span class="tag">Node.js</span><span class="tag">JavaScript</span></div>
+      </div>
+      <a class="proj-link" href="https://github.com/aamnamz" target="_blank">source ↗</a>
+    </div>
+
+  </div>
+</section>
+
+<section id="experience">
+  <div class="sec-label">cat experience.log</div>
+  <h2 class="sec-title reveal">Experience <span class="grey">// where I've worked</span></h2>
+  <div class="reveal">
+    <div class="exp-item">
+      <div class="exp-date">Jul 2026 – Sep 2026</div>
+      <div>
+        <div class="exp-role">Software Engineer Intern</div>
+        <div class="exp-org">GIKI — Internship (On-Site)</div>
+        <div class="exp-desc">Working as a Software Engineer Intern at GIKI, contributing to real-world engineering work and sharpening hands-on development skills. <em style="color:var(--grey-2); font-style:normal;"></em></div>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-date">Nov 2023 – Dec 2023</div>
+      <div>
+        <div class="exp-role">C++ Developer</div>
+        <div class="exp-org">CodSoft — Internship (Remote)</div>
+        <div class="exp-desc">Independently built three C++ projects over a two-month internship, sharpening core software development and problem-solving skills.</div>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-date">Nov 2023 – Apr 2025</div>
+      <div>
+        <div class="exp-role">Event Organizer</div>
+        <div class="exp-org">Microsoft Learn Student Ambassadors, IIUI</div>
+        <div class="exp-desc">Coordinated and managed events for the MLSA IIUI chapter, building organizational and leadership skills while fostering a collaborative community.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="sec-label">cat skills.json</div>
+  <h2 class="sec-title reveal">Skills <span class="grey">// the toolkit</span></h2>
+  <div class="skills-term reveal">
+    <div class="skill-row"><div class="skill-key">languages</div><div class="skill-val"><span>Python, C++, JavaScript, Java, SQL</span></div></div>
+    <div class="skill-row"><div class="skill-key">web_frontend</div><div class="skill-val"><span>HTML, CSS, JavaScript, React</span></div></div>
+    <div class="skill-row"><div class="skill-key">backend</div><div class="skill-val"><span>Django, Django REST Framework, Node.js, Express.js, REST APIs</span></div></div>
+    <div class="skill-row"><div class="skill-key">ai_ml</div><div class="skill-val"><span>Machine Learning, NLP, AI Image Processing, spaCy, BERTopic, Sentence Transformers, Groq LLM, XGBoost, Random Forest, SHAP, Naïve Bayes, Decision Trees</span></div></div>
+    <div class="skill-row"><div class="skill-key">databases</div><div class="skill-val"><span>PostgreSQL, SQL, MongoDB, Oracle, MySQL, SQLite</span></div></div>
+    <div class="skill-row"><div class="skill-key">data_apps</div><div class="skill-val"><span>Streamlit, Data Preprocessing, Feature Engineering, Data Visualization, Explainable AI</span></div></div>
+    <div class="skill-row"><div class="skill-key">mobile_systems</div><div class="skill-val"><span>Android, Voice Recognition, Accessibility, Operating Systems, Systems Programming, PyInstaller</span></div></div>
+    <div class="skill-row"><div class="skill-key">networking_security</div><div class="skill-val"><span>Snort (NIDS), Wireshark, Cisco Packet Tracer</span></div></div>
+    <div class="skill-row"><div class="skill-key">core_concepts</div><div class="skill-val"><span>Data Structures &amp; Algorithms, OOP, Database Design, Full-Stack Development</span></div></div>
+    <div class="skill-row"><div class="skill-key">tools_collaboration</div><div class="skill-val"><span>Git, GitHub, Jira</span></div></div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="sec-label">cat education.txt</div>
+  <h2 class="sec-title reveal">Education <span class="grey">// the foundation</span></h2>
+  <div class="reveal">
+    <div class="edu-card">
+      <div class="edu-degree">B.S. Software Engineering</div>
+      <div class="edu-school">International Islamic University, Islamabad</div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-degree">FSc Pre-Engineering</div>
+      <div class="edu-school">Fazaia Degree College, MRF Colony Kamra</div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="sec-label" style="justify-content:center;">./contact --reach-out</div>
+  <h2 class="sec-title reveal">Let's build something</h2>
+  <p class="reveal">Open to internships, collaborations, and anything AI/ML or software-engineering shaped. Reach out — I usually reply fast.</p>
+  <div class="contact-links reveal">
+    <a class="btn btn-primary" href="mailto:aamnaa.mumtazz@gmail.com">email me</a>
+    <a class="btn btn-ghost" href="https://github.com/aamnamz" target="_blank">github ↗</a>
+    <a class="btn btn-ghost" href="https://www.linkedin.com/in/amnaamumtaz/" target="_blank">linkedin ↗</a>
+  </div>
+  <div class="foot-note">built by Amna Mumtaz · <span class="amber">status: always learning</span></div>
+</footer>
+
+<script>
+  // Typing effect for hero
+  const line1 = document.getElementById('typed-line-1');
+  const name = "Amna Mumtaz";
+  const role = " — Software Engineer & aspiring AI/ML Developer";
+  let i = 0;
+  function typeChar(){
+    if(i <= name.length){
+      line1.innerHTML = '<span id="typed-name">' + name.slice(0,i) + '</span><span class="cursor"></span>';
+      i++;
+      setTimeout(typeChar, 55);
+    } else {
+      typeRole();
+    }
+  }
+  let j = 0;
+  function typeRole(){
+    if(j <= role.length){
+      line1.innerHTML = '<span id="typed-name">' + name + '</span><span id="typed-role">' + role.slice(0,j) + '</span><span class="cursor"></span>';
+      j++;
+      setTimeout(typeRole, 22);
+    } else {
+      revealHero();
+    }
+  }
+  function revealHero(){
+    document.getElementById('hero-sub').classList.add('in');
+    setTimeout(()=> document.getElementById('hero-cta').classList.add('in'), 200);
+  }
+  window.addEventListener('load', ()=> setTimeout(typeChar, 400));
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
